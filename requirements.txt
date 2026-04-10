@@ -1,0 +1,8 @@
+aiohttp
+aiosqlite
+discord.py
+fastapi
+psutil
+pydantic
+python-dotenv
+uvicorn

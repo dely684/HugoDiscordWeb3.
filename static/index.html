@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Hüküm RolePlay | Premium Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Authentication Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-modal">
+            <i class="fas fa-lock" style="font-size: 3rem; color: var(--primary); margin-bottom: 1.5rem;"></i>
+            <h2>Dashboard Access</h2>
+            <p>Please enter your access token to continue.</p>
+            <input type="password" id="login-token" placeholder="Your Access Token">
+            <button onclick="handleLogin()">Unlock Dashboard</button>
+            <p id="login-error" style="color: var(--accent-red); margin-top: 1rem; display: none;">Invalid access token!</p>
+        </div>
+    </div>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <span style="color: var(--primary); font-size: 2rem; font-weight: 800; filter: drop-shadow(0 0 8px var(--primary-glow)); line-height: 1;">HK</span>
+            <div class="logo-text">
+                <span>Hüküm RolePlay</span>
+                <span class="logo-subtitle">Discord Bot Dashboard</span>
+            </div>
+        </div>
+
+        <div class="sidebar-label">MAIN</div>
+        <a class="sidebar-item active" id="nav-dashboard" onclick="showTab('dashboard', this)">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <a class="sidebar-item" id="nav-settings" onclick="showTab('settings', this)">
+            <i class="fas fa-robot"></i> Bot Settings
+        </a>
+        <a class="sidebar-item" onclick="showTab('docs', this)">
+            <i class="fas fa-file-alt"></i> Documentation
+        </a>
+        <a class="sidebar-item" id="nav-access-control" onclick="showTab('access-control', this)" style="display: none;">
+            <i class="fas fa-user-shield"></i> Access Control
+        </a>
+
+        <div class="sidebar-label" id="label-commands">COMMANDS</div>
+        <a class="sidebar-item" id="nav-commands-all" onclick="showTab('commands', this, 'all')">
+            <i class="fas fa-terminal"></i> All Commands
+        </a>
+        <a class="sidebar-item" id="nav-commands-mod" onclick="showTab('commands', this, 'Moderation')">
+            <i class="fas fa-shield-alt"></i> Moderation
+        </a>
+        <a class="sidebar-item" id="nav-commands-util" onclick="showTab('commands', this, 'Utility')">
+            <i class="fas fa-tools"></i> Utility
+        </a>
+        <a class="sidebar-item" id="nav-commands-econ" onclick="showTab('commands', this, 'Economy')">
+            <i class="fas fa-coins"></i> Economy
+        </a>
+
+        <div class="sidebar-label" id="label-config">CONFIGURATION</div>
+        <a class="sidebar-item" id="nav-members" onclick="showTab('members', this)">
+            <i class="fas fa-users"></i> Üye Yönetimi
+        </a>
+        <a class="sidebar-item" id="nav-rules" onclick="showTab('rules', this)">
+            <i class="fas fa-gavel"></i> Kurallar
+        </a>
+        <a class="sidebar-item" id="nav-suggestions" onclick="showTab('suggestions', this)">
+            <i class="fas fa-lightbulb"></i> Öneriler
+        </a>
+        <a class="sidebar-item" id="nav-apply" onclick="showTab('apply', this)">
+            <i class="fas fa-user-plus"></i> Başvuru Ayarları
+        </a>
+        <a class="sidebar-item" id="nav-auto-responder" onclick="showTab('auto-responder', this)">
+            <i class="fas fa-reply-all"></i> Auto Response
+        </a>
+        <a class="sidebar-item" id="nav-automod" onclick="showTab('automod', this)">
+            <i class="fas fa-shield-virus"></i> Auto-Mod
+        </a>
+
+        <div class="sidebar-label" id="label-logs-cat">LOGS</div>
+        <a class="sidebar-item" id="nav-logs-general" onclick="showTab('logs', this)">
+            <i class="fas fa-history"></i> Genel Logs
+        </a>
+        <a class="sidebar-item" id="nav-ticket-logs" onclick="showTab('ticket-logs', this)">
+            <i class="fas fa-file-invoice"></i> Ticket Logs
+        </a>
+        <a class="sidebar-item" id="nav-ekip-logs" onclick="showTab('ekip-logs', this)">
+            <i class="fas fa-users"></i> Ekip Logs
+        </a>
+        <a class="sidebar-item" id="nav-yayinci-logs" onclick="showTab('yayinci-logs', this)">
+            <i class="fas fa-video"></i> Yayıncı Logs
+        </a>
+        <a class="sidebar-item" id="nav-uyari-logs" onclick="showTab('uyari-logs', this)">
+            <i class="fas fa-shield-alt"></i> Uyarı Logs
+        </a>
+        <a class="sidebar-item" id="nav-voice-logs" onclick="showTab('voice-logs', this)">
+            <i class="fas fa-microphone-alt"></i> Voice Logs
+        </a>
+        <a class="sidebar-item" id="nav-invite-logs" onclick="showTab('invite-logs', this)">
+            <i class="fas fa-user-plus"></i> Davet Takip & Loglar
+        </a>
+        <a class="sidebar-item" id="nav-apply-logs" onclick="showTab('apply-logs', this)">
+            <i class="fas fa-clipboard-list"></i> Başvuru Kayıtları
+        </a>
+
+        <div class="sidebar-label" id="label-bots">Bot's</div>
+        <a class="sidebar-item" id="nav-tickets" onclick="showTab('tickets', this)">
+            <i class="fas fa-ticket-alt"></i> Ticket
+        </a>
+        <a class="sidebar-item" id="nav-ekip" onclick="showTab('ekip', this)">
+            <i class="fas fa-users-cog"></i> Ekip Sistemi
+        </a>
+        <a class="sidebar-item" id="nav-yayinci" onclick="showTab('yayinci', this)">
+            <i class="fas fa-video"></i> Yayıncı Sistemi
+        </a>
+        <a class="sidebar-item" id="nav-uyari" onclick="showTab('uyari', this)">
+            <i class="fas fa-exclamation-triangle"></i> Uyarı Sistemi
+        </a>
+        <a class="sidebar-item" id="nav-giveaway" onclick="showTab('giveaway', this)">
+            <i class="fas fa-gift"></i> Çekiliş Yönetimi
+        </a>
+        <a class="sidebar-item" id="nav-embed-builder" onclick="showTab('embed-builder', this)">
+            <i class="fas fa-magic"></i> Embed Builder
+        </a>
+
+        <div class="sidebar-footer">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Sistem Çevrimiçi</span>
+            </div>
+            <a class="sidebar-item" onclick="logout()" style="color: var(--accent-red); background: rgba(231, 76, 60, 0.1); margin-top: 10px;">
+                <i class="fas fa-sign-out-alt"></i> Oturumu Kapat
+            </a>
+            <div style="margin-bottom: 1rem;">
+                <select style="background: var(--bg-card); padding: 5px 10px; font-size: 0.75rem;">
+                    <option>us English</option>
+                    <option>tr Türkçe</option>
+                </select>
+            </div>
+            <div class="sidebar-socials">
+                <i class="fab fa-discord"></i>
+                <i class="fab fa-github"></i>
+                <i class="fab fa-youtube"></i>
+                <i class="fab fa-instagram"></i>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- Top Stats Pill Bar -->
+        <div class="top-stats-bar">
+            <div class="top-stat-pill">
+                <div class="indicator" style="background: var(--accent-green);"></div>
+                Bot Online
+            </div>
+            <div class="top-stat-pill">
+                Ping: <span id="top-ping">-1ms</span>
+            </div>
+            <div class="top-stat-pill">
+                Uptime: <span id="top-uptime">0m</span>
+            </div>
+            <div class="top-stat-pill">
+                Memory: <span id="top-memory">0.00 MB</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <section id="tab-dashboard" class="tab-content active">
+            <div class="dashboard-header">
+                <h1>Dashboard</h1>
+            </div>
+
+            <div class="content-sections">
+                <!-- Left Side -->
+                <div class="section-group">
+                    <!-- Analytics Card -->
+                    <div class="card">
+                        <div class="card-title-row">
+                            <h2>Server Analytics</h2>
+                            <div class="header-actions">
+                                <select id="analytics-days" onchange="updateAnalyticsChart()" style="background: var(--bg-card); color: var(--text-main); border: 1px solid var(--border); border-radius: 4px; padding: 2px 8px; font-size: 0.8rem;">
+                                    <option value="7">Last 7 Days</option>
+                                    <option value="14">Last 14 Days</option>
+                                    <option value="30">Last 30 Days</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-container" style="position: relative; height:300px; width:100%">
+                            <canvas id="analyticsChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Overview Stats Card -->
+                    <div class="card">
+                        <div class="card-title-row">
+                            <h2>Overview Stats</h2>
+                            <a href="#" class="view-all">Live Data <i class="fas fa-sync-alt"></i></a>
+                        </div>
+                        <div class="overview-grid">
+                            <div class="ov-card blue">
+                                <div class="ov-info">
+                                    <h3>Servers</h3>
+                                    <div class="value" id="stat-guilds">0</div>
+                                    <div class="trend"><i class="fas fa-arrow-up"></i> 5% from last week</div>
+                                </div>
+                                <i class="fas fa-server ov-icon"></i>
+                            </div>
+                            <div class="ov-card green">
+                                <div class="ov-info">
+                                    <h3>Users</h3>
+                                    <div class="value" id="stat-users">0</div>
+                                    <div class="trend"><i class="fas fa-arrow-up"></i> 12% from last month</div>
+                                </div>
+                                <i class="fas fa-users ov-icon"></i>
+                            </div>
+                            <div class="ov-card purple">
+                                <div class="ov-info">
+                                    <h3>Commands</h3>
+                                    <div class="value" id="stat-commands">0</div>
+                                    <div class="trend"><i class="fas fa-arrow-up"></i> 8% from last day</div>
+                                </div>
+                                <i class="fas fa-terminal ov-icon"></i>
+                            </div>
+                            <!-- Live Stats -->
+                            <div class="ov-card orange">
+                                <div class="ov-info">
+                                    <h3>Online</h3>
+                                    <div class="value" id="live-online">0</div>
+                                    <div class="trend">Aktif Üyeler</div>
+                                </div>
+                                <i class="fas fa-user-check ov-icon"></i>
+                            </div>
+                            <div class="ov-card pink">
+                                <div class="ov-info">
+                                    <h3>Voice</h3>
+                                    <div class="value" id="live-voice">0</div>
+                                    <div class="trend">Sesteki Üyeler</div>
+                                </div>
+                                <i class="fas fa-microphone ov-icon"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Module Status Card -->
+                    <div class="card">
+                        <div class="card-title-row">
+                            <h2>Module Status</h2>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+                        <div class="module-grid">
+                            <div class="module-card">
+                                <div class="module-icon"><i class="fas fa-shield-alt"></i></div>
+                                <div class="module-details">
+                                    <h4>Protection</h4>
+                                    <p>5 active rules</p>
+                                </div>
+                                <div class="module-status"></div>
+                            </div>
+                            <div class="module-card">
+                                <div class="module-icon" style="color: var(--accent-green);"><i
+                                        class="fas fa-ticket-alt"></i></div>
+                                <div class="module-details">
+                                    <h4>Tickets</h4>
+                                    <p>0 ticket types</p>
+                                </div>
+                                <div class="module-status"></div>
+                            </div>
+                            <div class="module-card">
+                                <div class="module-icon" style="color: var(--accent-purple);"><i
+                                        class="fas fa-briefcase"></i></div>
+                                <div class="module-details">
+                                    <h4>Applications</h4>
+                                    <p>0 active positions</p>
+                                </div>
+                                <div class="module-status"></div>
+                            </div>
+                            <div class="module-card">
+                                <div class="module-icon" style="color: var(--accent-orange);"><i
+                                        class="fas fa-gavel"></i></div>
+                                <div class="module-details">
+                                    <h4>Rules</h4>
+                                    <p>1 rule sections</p>
+                                </div>
+                                <div class="module-status"></div>
+                            </div>
+                            <div class="module-card">
+                                <div class="module-icon" style="color: var(--accent-red);"><i class="fas fa-gift"></i>
+                                </div>
+                                <div class="module-details">
+                                    <h4>Giveaways</h4>
+                                    <p>Active</p>
+                                </div>
+                                <div class="module-status"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support Section -->
+                    <div class="card">
+                        <div class="card-title-row">
+                            <h2>Support</h2>
+                        </div>
+                        <div class="module-grid">
+                            <div class="module-card" style="background: var(--glass-heavy);">
+                                <div class="module-icon" style="background: rgba(88, 101, 242, 0.2);"><i
+                                        class="fab fa-discord"></i></div>
+                                <div class="module-details">
+                                    <h4>Join Our Discord</h4>
+                                    <p>Get help from community</p>
+                                </div>
+                            </div>
+                            <div class="module-card" style="background: var(--glass-heavy);">
+                                <div class="module-icon" style="background: rgba(255, 255, 255, 0.1);"><i
+                                        class="fab fa-github"></i></div>
+                                <div class="module-details">
+                                    <h4>GitHub Issues</h4>
+                                    <p>Report bugs & suggestions</p>
+                                </div>
+                            </div>
+                            <div class="module-card" style="background: var(--glass-heavy);">
+                                <div class="module-icon" style="background: rgba(231, 76, 60, 0.2);"><i
+                                        class="fab fa-youtube"></i></div>
+                                <div class="module-details">
+                                    <h4>YouTube Tutorials</h4>
+                                    <p>Watch guides and tutorials</p>
+                                </div>
+                            </div>
+                            <div class="module-card" style="background: var(--glass-heavy);">
+                                <div class="module-icon" style="background: rgba(230, 126, 34, 0.2);"><i
+                                        class="fas fa-donate"></i></div>
+                                <div class="module-details">
+                                    <h4>Donate</h4>
+                                    <p>Support the project</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side -->
+                <div class="section-group">
+                    <!-- Bot Health Card -->
+                    <div class="card">
+                        <div class="card-title-row">
+                            <h2>Bot Health</h2>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-info">
+                                <span>Ping</span>
+                                <span id="health-ping-val">-1 ms</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar green" id="ping-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-info">
+                                <span>Memory Usage</span>
+                                <span id="health-ram-val">0.00 MB</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar blue" id="ram-progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-info">
+                                <span>Uptime</span>
+                                <span id="health-uptime-val">0m</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar purple" id="uptime-progress" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="health-item">
+                            <div class="health-info">
+                                <span>Protection Status</span>
+                                <span>5 active</span>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar purple"
+                                    style="width: 60%; background: linear-gradient(to right, #8e44ad, var(--primary));">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Card -->
+                    <div class="card">
+                        <div class="card-title-row">
+                            <h2>Quick Actions</h2>
+                        </div>
+                        <div class="quick-actions-grid">
+                            <button class="action-btn btn-blue">
+                                <i class="fas fa-shield-alt"></i>
+                                <span>Protection</span>
+                            </button>
+                            <button class="action-btn btn-green">
+                                <i class="fas fa-ticket-alt"></i>
+                                <span>Tickets</span>
+                            </button>
+                            <button class="action-btn btn-purple">
+                                <i class="fas fa-file-invoice"></i>
+                                <span>Apply</span>
+                            </button>
+                            <button class="action-btn btn-orange" onclick="showTab('commands', this)">
+                                <i class="fas fa-terminal"></i>
+                                <span>Commands</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Console Card -->
+                    <div class="card">
+                        <div class="card-title-row">
+                            <h2>Live Console</h2>
+                            <div class="status-indicator">
+                                <div class="status-dot"></div>
+                                <span style="font-size: 0.75rem;">Connected</span>
+                            </div>
+                        </div>
+                        <div class="console-wrapper">
+                            <div id="web-console" class="terminal-body">
+                                <div class="console-line system">Waiting for data...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity Card -->
+                        <div class="card-title-row">
+                            <h2>Recent Activity</h2>
+                        </div>
+                        <div class="activity-list">
+                            <div class="activity-item">
+                                <div class="activity-node">
+                                    <div class="activity-dot" style="background: var(--accent-blue);"></div>
+                                    <div class="activity-line"></div>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>System Initialized</h4>
+                                    <p>All systems are up and running</p>
+                                    <div class="activity-time">Just now</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-node">
+                                    <div class="activity-dot" style="background: var(--accent-green);"></div>
+                                    <div class="activity-line"></div>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>API Connected</h4>
+                                    <p>Gateway connection established</p>
+                                    <div class="activity-time">10 minutes ago</div>
+                                </div>
+                            </div>
+                            <div class="activity-item">
+                                <div class="activity-node">
+                                    <div class="activity-dot" style="background: var(--accent-purple);"></div>
+                                </div>
+                                <div class="activity-content">
+                                    <h4>Protection Active</h4>
+                                    <p>Server security systems enabled</p>
+                                    <div class="activity-time">1 hour ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Member Management Tab -->
+        <section id="tab-members" class="tab-content">
+            <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+                <h1>Üye Yönetimi</h1>
+                <div class="search-container" style="max-width: 350px; flex: 1;">
+                    <i class="fas fa-search" style="position: absolute; margin: 15px; color: var(--primary);"></i>
+                    <input type="text" id="member-search" placeholder="Üye ara (ID veya İsim)..." style="padding-left: 45px; border-radius: 100px; background: rgba(0,0,0,0.2);" oninput="loadMembers()">
+                </div>
+            </div>
+            
+            <div class="card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Üye</th>
+                            <th>En Yüksek Rol</th>
+                            <th>Katılma Tarihi</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="members-list-body">
+                        <!-- Members will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Bot Settings Tab -->
+        <section id="tab-settings" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Bot Settings & Control</h1>
+            </div>
+            
+            <div class="settings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+                <!-- General Settings -->
+                <div class="card">
+                    <h3><i class="fas fa-cog"></i> Temel Ayarlar</h3>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Komut Ön Eki (Prefix)</label>
+                        <input type="text" id="bot-prefix-input" placeholder="!">
+                    </div>
+                    <button onclick="saveGlobalSettings()" class="action-btn btn-blue" style="width: 100%; margin-top: 10px;">
+                        Değişiklikleri Kaydet
+                    </button>
+                </div>
+
+                <!-- Bot Presence -->
+                <div class="card">
+                    <h3><i class="fas fa-user-circle"></i> Bot Durumu & Aktivite</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div class="form-group">
+                            <label>Durum</label>
+                            <select id="bot-status-select" class="form-input" style="width: 100%; padding: 10px; background: var(--bg-darker); border: 1px solid var(--border); color: white; border-radius: 8px;">
+                                <option value="online">Çevrimiçi (Online)</option>
+                                <option value="idle">Boşta (Idle)</option>
+                                <option value="dnd">Rahatsız Etmeyin (DND)</option>
+                                <option value="invisible">Görünmez</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Aktivite Tipi</label>
+                            <select id="bot-activity-type" class="form-input" style="width: 100%; padding: 10px; background: var(--bg-darker); border: 1px solid var(--border); color: white; border-radius: 8px;">
+                                <option value="playing">Oynuyor</option>
+                                <option value="streaming">Yayında</option>
+                                <option value="listening">Dinliyor</option>
+                                <option value="watching">İzliyor</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Aktivite Yazısı</label>
+                        <input type="text" id="bot-activity-input" placeholder="Web Panel ile Kontrol Ediliyor">
+                    </div>
+                    <button onclick="updateBotStatus()" class="action-btn btn-green" style="width: 100%; margin-top: 10px;">
+                        Durumu Güncelle
+                    </button>
+                </div>
+
+                <!-- Critical Controls -->
+                <div class="card" style="border: 1px solid rgba(231, 76, 60, 0.3);">
+                    <h3 style="color: var(--accent-red);"><i class="fas fa-exclamation-triangle"></i> Kritik Kontroller</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin: 10px 0;">Botu yeniden başlatmak tüm aktif işlemleri durdurur ve botu script seviyesinde yeniler.</p>
+                    <button onclick="restartBot()" class="action-btn btn-orange" style="width: 100%; background: var(--accent-red); color: white; font-weight: bold;">
+                        <i class="fas fa-redo"></i> Botu Yeniden Başlat
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-docs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>📖 Kullanım Klavuzu</h1>
+            </div>
+
+            <div class="content-sections">
+                <div class="section-group">
+                    <div class="card">
+                        <h3>🚀 Başlangıç</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px;">Hüküm RolePlay yönetim paneline hoş geldiniz. Botun tüm özelliklerini buradan yönetebilir ve sunucunuzu optimize edebilirsiniz.</p>
+                        
+                        <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+                            <div style="padding: 1rem; background: var(--glass); border-radius: 12px; border: 1px solid var(--border);">
+                                <strong style="color: var(--primary);">Prefix & Temel Komutlar</strong>
+                                <p style="font-size: 0.85rem; margin-top: 5px;">Botun varsayılan ön eki <code>!</code> işaretidir. Bunu <b>Bot Settings</b> sekmesinden değiştirebilirsiniz.</p>
+                            </div>
+                            
+                            <div style="padding: 1rem; background: var(--glass); border-radius: 12px; border: 1px solid var(--border);">
+                                <strong style="color: var(--accent-blue);">Moderasyon Sistemi</strong>
+                                <p style="font-size: 0.85rem; margin-top: 5px;"><code>!kick</code>, <code>!ban</code>, <code>!purge</code> ve <code>!warn</code> komutları ile sunucu düzenini sağlayın. Tüm işlemler <b>Logs</b> sekmesinde kayıt altına alınır.</p>
+                            </div>
+
+                            <div style="padding: 1rem; background: var(--glass); border-radius: 12px; border: 1px solid var(--border);">
+                                <strong style="color: var(--accent-green);">Ekonomi Özellikleri</strong>
+                                <p style="font-size: 0.85rem; margin-top: 5px;">Kullanıcılar <code>!daily</code> ve <code>!work</code> ile coin kazanabilir, <code>!slots</code> ile şanslarını deneyebilirler.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>🎫 Destek & Ticket</h3>
+                        <p style="color: var(--text-muted); margin-top: 10px;">Ticket sistemi, kullanıcıların yetkililerle özel kanallarda görüşmesini sağlar.</p>
+                        <ul style="margin-top: 10px; padding-left: 20px; color: var(--text-muted); font-size: 0.85rem; line-height: 1.6;">
+                            <li><code>!ticket setup</code> komutu ile destek mesajını oluşturun.</li>
+                            <li>Kullanıcılar butona bastığında otomatik kanal açılır.</li>
+                            <li>Kilit ikonu ile talebi kapatabilir ve logları panelden görebilirsiniz.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="section-group">
+                    <div class="card" style="background: linear-gradient(135deg, var(--bg-card), rgba(88, 101, 242, 0.1));">
+                        <h3>🛡️ Yetkili Paneli Avantajları</h3>
+                        <p style="font-size: 0.85rem; margin-top: 10px;">Panel üzerinden şu işlemleri anlık yapabilirsiniz:</p>
+                        <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem;">
+                                <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
+                                Komutları Aktif/Pasif Yapma
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem;">
+                                <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
+                                Sunucu Kurallarını Yayınlama
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem;">
+                                <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
+                                Gelen Önerileri Onaylama/Reddetme
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; font-size: 0.8rem;">
+                                <i class="fas fa-check-circle" style="color: var(--accent-green);"></i>
+                                Yetkili Başvurularını Değerlendirme
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>💡 İpucu</h3>
+                        <p style="font-size: 0.8rem; line-height: 1.5; color: var(--text-muted);">
+                            Eğer bot mesajlara tepki vermiyorsa, Dashboard üzerindeki <b>Bot Health</b> kısmından gecikme (ping) süresini kontrol edin.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-ekip-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Ekip Sistemi Kayıtları</h1>
+            </div>
+            <div class="card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Kullanıcı</th>
+                            <th>İşlem Detayı</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ekip-logs-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-yayinci-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Yayıncı Sistemi Kayıtları</h1>
+            </div>
+            <div class="card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Kullanıcı</th>
+                            <th>İşlem Detayı</th>
+                        </tr>
+                    </thead>
+                    <tbody id="yayinci-logs-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-uyari-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Uyarı Modülü Kayıtları</h1>
+            </div>
+            <div class="card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Kullanıcı</th>
+                            <th>İşlem Detayı</th>
+                        </tr>
+                    </thead>
+                    <tbody id="uyari-logs-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-commands" class="tab-content">
+            <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; border-bottom: 1px solid var(--border); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+                <h1 id="commands-title">Commands Management</h1>
+                <div class="search-container" style="max-width: 350px; flex: 1;">
+                    <i class="fas fa-search" style="position: absolute; margin: 15px; color: var(--primary);"></i>
+                    <input type="text" id="command-search" placeholder="Hızlı komut ara..." style="padding-left: 45px; border-radius: 100px; background: rgba(0,0,0,0.2);" oninput="filterCommands()">
+                </div>
+            </div>
+            <div id="command-cards-container" class="cmd-flex-grid"></div>
+        </section>
+
+        <section id="tab-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>System Logs</h1>
+            </div>
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: rgba(255,255,255,0.05);">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left;">Date</th>
+                            <th style="padding: 1rem; text-align: left;">User</th>
+                            <th style="padding: 1rem; text-align: left;">Action / Message</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logs-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-ticket-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Ticket Logs</h1>
+            </div>
+            <div class="card" style="padding: 0; overflow: hidden;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: rgba(255,255,255,0.05);">
+                        <tr>
+                            <th style="padding: 1rem; text-align: left;">Date</th>
+                            <th style="padding: 1rem; text-align: left;">Authorized</th>
+                            <th style="padding: 1rem; text-align: left;">Transcript</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ticket-logs-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="tab-rules" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Kurallar Paneli</h1>
+            </div>
+            <div class="card">
+                <h3>Kanal Ayarları</h3>
+                <div class="form-group">
+                    <label>Kurallar Kanalı</label>
+                    <select id="rules-channel-select"></select>
+                </div>
+                <button onclick="saveChannelConfig()" class="action-btn-main" style="background: var(--primary); margin-top: 0;">Kanalları Kaydet</button>
+            </div>
+            <div class="card">
+                <h3>Sunucu Kurallarını Yönet</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Kuralları ekleyin veya mevcut olanları
+                    düzenleyin.</p>
+                <div class="form-group">
+                    <label>Kural Başlığı</label>
+                    <input type="text" id="rule-title" placeholder="Örn: Küfür Yasaktır">
+                </div>
+                <div class="form-group">
+                    <label>Kural Açıklaması</label>
+                    <textarea id="rule-desc" rows="3" placeholder="Kural detaylarını buraya yazın..."></textarea>
+                </div>
+                <button onclick="saveRule()" class="action-btn-main" style="background: var(--primary);">
+                    <i class="fas fa-paper-plane"></i> Kuralı Kaydet & Discord'a Gönder
+                </button>
+            </div>
+            <div class="card">
+                <h3>Aktif Kurallar</h3>
+                <div id="active-rules-list">
+                    <div
+                        style="padding: 1rem; background: var(--bg-darker); border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border);">
+                        <strong>1. Saygılı Olun</strong>
+                        <p style="font-size: 0.8rem; color: var(--text-muted);">Tüm üyelere karşı saygılı davranmak
+                            zorunludur.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-suggestions" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Öneri Sistemi</h1>
+            </div>
+            <div class="card">
+                <h3>Kanal Ayarları</h3>
+                <div class="form-group">
+                    <label>Öneri Kanalı</label>
+                    <select id="suggestions-channel-select"></select>
+                </div>
+                <button onclick="saveChannelConfig()" class="action-btn-main" style="background: var(--primary); margin-top: 0;">Kanalları Kaydet</button>
+            </div>
+            <div id="suggestions-list" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- Öneriler script.js tarafından buraya dinamik olarak yüklenecek -->
+                <p style="text-align: center; color: var(--text-muted); padding: 2rem;">Öneriler yükleniyor...</p>
+            </div>
+        </section>
+
+        <section id="tab-apply" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Başvuru Yönetimi</h1>
+            </div>
+            <div class="card">
+                <h3>Kanal Ayarları</h3>
+                <div class="form-group">
+                    <label>Başvuru Kanalı</label>
+                    <select id="apply-channel-select"></select>
+                </div>
+                <button onclick="saveChannelConfig()" class="action-btn-main" style="background: var(--primary); margin-top: 0;">Kanalları Kaydet</button>
+            </div>
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <h3>Yetkili Alım Durumu</h3>
+                    <label class="switch">
+                        <input type="checkbox" checked onchange="toggleApplications(this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 20px;">Başvuru sistemini anlık
+                    olarak açıp kapatabilirsiniz.</p>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button onclick="saveChannelConfig()" style="background: var(--accent-blue); display: none;"
+                        class="action-btn-main">Gereksiz Buton</button>
+                    <button onclick="sendApplyForm()" style="background: var(--primary);" class="action-btn-main">
+                        <i class="fas fa-paper-plane"></i> Başvuru Yazısını Kanala Gönder
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- New section for Application Logs -->
+        <section id="tab-apply-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Gelen Başvurular</h1>
+            </div>
+            <div id="apply-logs-container">
+                <div class="card">
+                    <h3>Gelen Başvurular</h3>
+                    <p style="color: var(--text-muted); text-align: center; padding: 2rem;">Henüz yeni bir başvuru bulunmuyor.</p>
+                </div>
+            </div>
+        </section>
+        <section id="tab-tickets" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Ticket Sistemi Yönetimi</h1>
+            </div>
+            <div class="card">
+                <h3>Gelişmiş Yapılandırma</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Ticket sisteminin çalışması için gerekli kanalları ve rolleri buradan ayarlayın.</p>
+                
+                <div class="form-group">
+                    <label>Ticket Kategorisi (Kanalların Açılacağı Yer)</label>
+                    <select id="ticket-category-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Yetkili Rolü (Biletleri Görecek Olanlar)</label>
+                    <select id="ticket-staff-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Log Kanalı (Yedeklerin Gideceği Yer)</label>
+                    <select id="ticket-log-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Logo URL (Ticket Embed Görüntüsü)</label>
+                    <input type="text" id="ticket-logo-input" placeholder="https://i.imgur.com/example.png">
+                </div>
+
+                <button onclick="saveTicketConfig()" class="action-btn-main" style="background: var(--primary); margin-top: 10px;">
+                    <i class="fas fa-save"></i> Ayarları Kaydet
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>Kurulum Mesajı</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Kullanıcıların ticket açması için gerekli butonlu mesajı bir kanala gönderin.</p>
+                
+                <div class="form-group">
+                    <label>Mesajın Gönderileceği Kanal</label>
+                    <select id="ticket-setup-channel-select"></select>
+                </div>
+
+                <button onclick="sendTicketSetup()" class="action-btn-main" style="background: var(--accent-green);">
+                    <i class="fas fa-paper-plane"></i> Kurulum Mesajını Gönder
+                </button>
+            </div>
+        </section>
+
+        <!-- Yeni Sistem Tabları -->
+        <section id="tab-ekip" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Ekip Başvuru Sistemi Yönetimi</h1>
+            </div>
+            <div class="card">
+                <h3>Gelişmiş Yapılandırma</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Ekip onaylandığında hangi kategoriye kanal açılacağını ve kimin ilgileneceğini ayarlayın.</p>
+                
+                <div class="form-group">
+                    <label>Ekip Kategorisi (Oluşacak Kanalların Gideceği Yer)</label>
+                    <select id="ekip-category-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Başvuruların Düşeceği Kanal (Log)</label>
+                    <select id="ekip-log-channel-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Yetkili Rolü (Başvuruları Onaylayacak Rol)</label>
+                    <select id="ekip-staff-select"></select>
+                </div>
+
+                <button onclick="saveEkipConfig()" class="action-btn-main" style="background: var(--primary); margin-top: 10px;">
+                    <i class="fas fa-save"></i> Ayarları Kaydet
+                </button>
+            </div>
+            
+            <div class="card">
+                <h3>Kurulum Mesajı</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Kullanıcıların ekip oluşturması için gerekli butonlu mesajı bir kanala gönderin.</p>
+                
+                <div class="form-group">
+                    <label>Mesajın Gönderileceği Kanal</label>
+                    <select id="ekip-setup-channel-select"></select>
+                </div>
+
+                <button onclick="sendEkipSetup()" class="action-btn-main" style="background: var(--accent-green);">
+                    <i class="fas fa-paper-plane"></i> Kurulum Mesajını Gönder
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>Ekip Silme Paneli</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Bir ekibi lağvetmek (komple silmek) için aşağıdaki listeden seçip silin.</p>
+                
+                <div class="form-group">
+                    <label>Silinecek Ekip</label>
+                    <select id="ekip-delete-select">
+                        <option value="">Ekip yükleniyor...</option>
+                    </select>
+                </div>
+
+                <button onclick="deleteTeamFromWeb()" class="action-btn-main" style="background: var(--accent-red);">
+                    <i class="fas fa-trash-alt"></i> Ekibi Tamamen Sil
+                </button>
+            </div>
+
+        </section>
+
+        <section id="tab-yayinci" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Yayıncı Sistemi Yönetimi</h1>
+            </div>
+            <div class="card">
+                <h3>Genel Ayarlar</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Yayıncıların yayın yaptıklarında bildirimin nereye atılacağını ve hangi role etiket atılacağını seçin.</p>
+                
+                <div class="form-group">
+                    <label>Duyuru Kanalı</label>
+                    <select id="yayinci-channel-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Bildirim Rolü (İsteğe Bağlı, Etiket Atılacak Rol)</label>
+                    <select id="yayinci-role-select"></select>
+                </div>
+
+                <button onclick="saveYayinciConfig()" class="action-btn-main" style="background: var(--primary); margin-top: 10px;">
+                    <i class="fas fa-save"></i> Ayarları Kaydet
+                </button>
+            </div>
+        </section>
+
+        <!-- Access Control Tab (Owner Only) -->
+        <section id="tab-access-control" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Access Control & Token Management</h1>
+            </div>
+
+            <div class="token-grid">
+                <!-- Generate Token Card -->
+                <div class="card">
+                    <h3>Generate New Token</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Create a new access token with a specific role level.</p>
+                    
+                    <div class="form-group">
+                        <label>Select Role Level</label>
+                        <select id="gen-token-role">
+                            <option value="owner">Owner (Full Access)</option>
+                            <option value="admin">Admin (High Access)</option>
+                            <option value="staff">Staff (Limited Access)</option>
+                            <option value="trial_staff">Trial Staff (View Only)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="generateNewToken()" class="action-btn-main">
+                        <i class="fas fa-plus"></i> Generate Token
+                    </button>
+
+                    <div id="new-token-display" style="margin-top: 1.5rem; display: none;">
+                        <label>New Token Generated:</label>
+                        <div style="display: flex; gap: 10px; margin-top: 5px;">
+                            <input type="text" id="generated-token-id" readonly style="flex: 1; font-family: monospace; background: rgba(0,0,0,0.3);">
+                            <button onclick="copyGeneratedToken()" style="width: auto; padding: 0 15px;"><i class="fas fa-copy"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Tokens List -->
+                <div class="card" style="grid-column: span 2;">
+                    <h3>Active Tokens</h3>
+                    <div style="overflow-x: auto; margin-top: 1rem;">
+                        <table class="token-table">
+                            <thead>
+                                <tr>
+                                    <th>Token</th>
+                                    <th>Role</th>
+                                    <th>Created At</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="token-list-body">
+                                <!-- Tokens will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="tab-uyari" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Uyarı (Moderasyon) Sistemi Yönetimi</h1>
+            </div>
+            <div class="card">
+                <h3>Ayarlar</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Sunucudaki uyarı sisteminin işleyişi ile ilgili roller ve log kanalı.</p>
+                
+                <div class="form-group">
+                    <label>Uyarı Log Kanalı (Opsiyonel)</label>
+                    <select id="uyari-log-channel-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label>Uyarı Verebilecek Mod Rolü (Opsiyonel)</label>
+                    <select id="uyari-staff-select"></select>
+                </div>
+
+                <button onclick="saveUyariConfig()" class="action-btn-main" style="background: var(--primary); margin-top: 10px;">
+                    <i class="fas fa-save"></i> Ayarları Kaydet
+                </button>
+            </div>
+
+        </section>
+
+        <section id="tab-auto-responder" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Otomatik Cevaplayıcı (Auto-Responder)</h1>
+            </div>
+            
+            <div class="card">
+                <h3>Yeni Otomatik Cevap Ekle</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Bir anahtar kelime yazıldığında botun vereceği cevabı ayarlayın.</p>
+                
+                <div class="form-group">
+                    <label>Anahtar Kelime (Mesajda aynen geçmesi gerekir)</label>
+                    <input type="text" id="ar-keyword" placeholder="Örn: ip nedir?">
+                </div>
+
+                <div class="form-group">
+                    <label>Botun Vereceği Cevap</label>
+                    <textarea id="ar-response" rows="3" placeholder="Örn: Sunucumuza play.hukumrp.com adresinden katılabilirsin!"></textarea>
+                </div>
+
+                <button onclick="addAutoResponder()" class="action-btn-main" style="background: var(--primary);">
+                    <i class="fas fa-plus"></i> Cevabı Kaydet
+                </button>
+            </div>
+
+            <div class="card">
+                <h3>Aktif Otomatik Cevaplar</h3>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Anahtar Kelime</th>
+                                <th>Cevap</th>
+                                <th style="text-align: right;">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auto-responder-list-body">
+                            <!-- Veriler script.js ile yüklenecek -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-embed-builder" class="tab-content">
+            <div class="dashboard-header">
+                <h1>Zengin Mesaj Oluşturucu (Embed Builder)</h1>
+            </div>
+
+            <div class="embed-builder-container">
+                <!-- Editor (Left) -->
+                <div class="embed-form">
+                    <div class="card">
+                        <h3>Mesaj İçeriği</h3>
+                        <div class="form-group">
+                            <label>Embed Rengi</label>
+                            <div class="color-input-wrapper">
+                                <input type="color" id="emb-color" value="#5865f2" oninput="updateEmbedPreview()">
+                                <input type="text" id="emb-color-hex" value="#5865f2" readonly style="flex:1;">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Başlık (Title)</label>
+                            <input type="text" id="emb-title" placeholder="Mesaj başlığı..." oninput="updateEmbedPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama (Description)</label>
+                            <textarea id="emb-description" rows="5" placeholder="Mesaj içeriği..." oninput="updateEmbedPreview()"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>Ek Detaylar</h3>
+                        <div class="form-group">
+                            <label>Yazar Adı (Author)</label>
+                            <input type="text" id="emb-author" placeholder="Yazar ismi..." oninput="updateEmbedPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Resim URL (Image)</label>
+                            <input type="text" id="emb-image" placeholder="https://resim-url.com/resim.png" oninput="updateEmbedPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Küçük Resim URL (Thumbnail)</label>
+                            <input type="text" id="emb-thumbnail" placeholder="https://resim-url.com/thumbnail.png" oninput="updateEmbedPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>Alt Bilgi (Footer)</label>
+                            <input type="text" id="emb-footer" placeholder="Mesaj alt bilgisi..." oninput="updateEmbedPreview()">
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top: 20px;">
+                        <h3>Gönderim Ayarları</h3>
+                        <div class="form-group">
+                            <label>Gönderilecek Kanal</label>
+                            <select id="emb-channel-select"></select>
+                        </div>
+                        <button onclick="sendEmbedToDiscord()" class="action-btn-main" style="background: var(--accent-green);">
+                            <i class="fas fa-paper-plane"></i> Mesajı Discord'a Gönder
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preview (Right) -->
+                <div class="discord-preview">
+                    <div style="color: #8e9297; font-size: 0.75rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;">
+                        <i class="fab fa-discord"></i> Canlı Önizleme
+                    </div>
+                    <div class="discord-embed" id="preview-embed-box">
+                        <div class="embed-inner">
+                            <div class="embed-author" id="preview-author-box" style="display: none;">
+                                <span class="embed-author-name" id="preview-author-name"></span>
+                            </div>
+                            <span class="embed-title" id="preview-title">Mesaj Başlığı</span>
+                            <div class="embed-description" id="preview-description">Buraya yazdığınız içerikler canlı olarak Discord görünümüyle burada belirecektir.</div>
+                            
+                            <div class="embed-image-container" id="preview-image-box">
+                                <img src="" id="preview-image" alt="Embed Image">
+                            </div>
+
+                            <div class="embed-footer" id="preview-footer-box" style="display: none;">
+                                <span class="embed-footer-text" id="preview-footer-text"></span>
+                            </div>
+                        </div>
+                        <img src="" class="embed-thumbnail" id="preview-thumbnail" alt="Thumbnail">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Auto-Mod Tab -->
+        <section id="tab-automod" class="tab-content">
+            <div class="dashboard-header">
+                <h1>🛡️ Auto-Moderation Control</h1>
+            </div>
+            <div class="settings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                <div class="card">
+                    <h3>Temel Korumalar</h3>
+                    <div class="setting-item" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px;">
+                        <div>
+                            <strong>Anti-Link</strong>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Reklam ve link gönderimini engeller.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="automod-links-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.1); border-radius: 8px;">
+                        <div>
+                            <strong>Anti-Spam</strong>
+                            <p style="font-size: 0.8rem; color: var(--text-muted);">Hızlı mesaj gönderimini engeller.</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="automod-spam-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Yasaklı Kelime Filtresi</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">Kelimeleri virgül ile ayırarak yazın (Örn: küfür1, küfür2, reklam sitesi).</p>
+                    <textarea id="automod-words-input" rows="5" placeholder="Yasaklı kelimeleri buraya girin..."></textarea>
+                    <button onclick="saveAutoMod()" class="action-btn btn-blue" style="width: 100%; margin-top: 15px;">Korumaları Kaydet</button>
+                </div>
+            </div>
+        </section>
+
+
+
+        <!-- Giveaway Tab -->
+        <section id="tab-giveaway" class="tab-content">
+            <div class="dashboard-header">
+                <h1>🎉 Çekiliş Yönetimi</h1>
+            </div>
+            <div class="settings-grid" style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                <div class="card">
+                    <h3>Yeni Çekiliş Başlat</h3>
+                    <div class="form-group">
+                        <label>Ödül</label>
+                        <input type="text" id="gw-prize" placeholder="Örn: Nitro Classic">
+                    </div>
+                    <div class="form-group">
+                        <label>Kazanan Sayısı</label>
+                        <input type="number" id="gw-winners" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Süre</label>
+                        <input type="text" id="gw-duration" placeholder="Örn: 10m, 1h, 24h">
+                    </div>
+                    <div class="form-group">
+                        <label>Kanal</label>
+                        <select id="gw-channel-select"></select>
+                    </div>
+                    <button onclick="startGiveaway()" class="action-btn btn-green" style="width: 100%;">Çekilişi Başlat</button>
+                </div>
+                <div class="card">
+                    <h3>Aktif Çekilişler</h3>
+                    <div id="active-giveaways-list">
+                        <!-- Aktif çekilişler buraya listelenecek -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Voice Logs Tab -->
+        <section id="tab-voice-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>🔉 Ses Kanalı Kayıtları</h1>
+            </div>
+            <div class="card">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Kullanıcı</th>
+                            <th>İşlem Detayı</th>
+                        </tr>
+                    </thead>
+                    <tbody id="voice-logs-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Invite Logs Tab -->
+        <section id="tab-invite-logs" class="tab-content">
+            <div class="dashboard-header">
+                <h1>📩 Davet Takip & Kayıtları</h1>
+            </div>
+            <div class="card">
+                <h3>Davet Liderlik Tablosu</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Üye</th>
+                            <th>Davet Sayısı</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invite-leaderboard-body">
+                        <!-- Buraya dinamik veriler gelecek -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h3>Davet Kayıtları</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Davet Eden</th>
+                            <th>Katılan Üye</th>
+                        </tr>
+                    </thead>
+                    <tbody id="invite-logs-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <div class="modal-overlay" id="transcript-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Ticket Transcript</span>
+                <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="transcript-container" id="transcript-content">
+                    Transcript yükleniyor...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js?v=3"></script>
+</body>
+
+</html>
