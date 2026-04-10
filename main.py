@@ -519,11 +519,22 @@ async def send_ekip_setup(guild_id: int, channel_id: int):
     
     from cogs.ekip_basvuru import EkipGirisView
     embed = discord.Embed(
-        title="Ekip Oluşturma Sistemi",
-        description="Ekibinizi kurmak ve sunucuda kendinize özel kanala sahip olmak için aşağıdaki butona basabilirsiniz.",
-        color=discord.Color.blue()
+        title="👑 KENDİ EKİBİNİ KUR",
+        description=(
+            "Sunucumuzda **kendi ekibini oluşturmak**, sadece size ait odalarda sohbet etmek "
+            "ve gücünüze güç katmak için doğru yerdesiniz!\n\n"
+            "Aşağıdaki butona tıklayarak hızla başvurunuzu tamamlayabilir, "
+            "ekibinize özel **rol ve odalara** kolayca sahip olabilirsiniz.\n\n"
+            "**🚀 Başvurmadan Önce Dikkat Edilmesi Gerekenler:**\n"
+            "➥ **Ekip Adı:** Sizi yansıtan havalı bir isim.\n"
+            "➥ **Kişi Sayısı:** Ekibinizde kaç kişi olduğu.\n"
+            "➥ **Açıklama:** Sizi anlatan kısa ve öz (Max 50 karakter) bir yazı."
+        ),
+        color=0x2b2d31 # Discord'un modern koyu arka plan rengine çok yakışan premium bir renk
     )
-    embed.add_field(name="Gereksinimler", value="- Ekip ismi\n- Kişi sayısı\n- Kısa açıklama (Max 50 karakter)", inline=False)
+    
+    # Altına fotoğraf ekleme kısmı
+    embed.set_image(url="https://cdn.discordapp.com/attachments/1491592592993947848/1491815965975908513/image.png?ex=69d91162&is=69d7bfe2&hm=250f5448f986cc40399dde27a38189623eed45581df740e7ff536425c26a0733")
     
     await ctx_channel.send(embed=embed, view=EkipGirisView())
     return {"status": "success"}
@@ -854,12 +865,10 @@ async def update_config(guild_id: int, req: ConfigUpdateRequest):
         req.ekip_category,
         req.ekip_staff_role,
         req.ekip_log_channel,
+        req.yayinci_channel,
         req.yayinci_role,
         req.uyari_log_channel,
-        req.uyari_staff_role,
-        req.automod_links,
-        req.automod_spam,
-        req.automod_words
+        req.uyari_staff_role
     )
     return {"status": "success"}
 
@@ -1094,7 +1103,7 @@ async def run_app():
     # Bootstrap: Eğer hiç token yoksa bir owner token oluştur
     tokens = await get_all_tokens()
     if not tokens:
-        bootstrap_token = "owner-codex-admin"
+        bootstrap_token = "owner7124124124-hukumrp921414-ownerr2313"
         await add_token(bootstrap_token, "owner")
         print(f"\n" + "="*50)
         print(f"🚀 BOOTSTRAP: İlk Kurucu Tokeni Oluşturuldu!")

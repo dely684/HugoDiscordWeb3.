@@ -48,6 +48,8 @@ async def init_db():
                 suggestions_channel TEXT,
                 applications_channel TEXT,
                 ticket_category TEXT,
+                ticket_log_channel TEXT,
+                ticket_staff_role TEXT,
                 ui_update_channel TEXT,
                 ticket_logo_url TEXT,
                 ekip_category TEXT,
