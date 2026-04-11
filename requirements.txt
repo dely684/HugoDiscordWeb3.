@@ -6,3 +6,4 @@ psutil
 pydantic
 python-dotenv
 uvicorn
+asyncpg
