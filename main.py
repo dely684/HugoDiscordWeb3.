@@ -143,8 +143,25 @@ async def on_message(message):
             # 1. Öneri Kanalı Kontrolü
             if str(message.channel.id) == config.get('suggestions_channel'):
                 await add_suggestion(message.guild.id, message.author.id, message.content, message.id)
-
+                await message.add_reaction("👍")
+                await message.add_reaction("👎")
                 print(f"📩 Yeni Öneri Kaydedildi: {message.author.name}")
+                
+                # Log kanalına şik embed gönder
+                if config.get('suggestions_log_channel'):
+                    log_ch = bot.get_channel(int(config['suggestions_log_channel']))
+                    if log_ch:
+                        log_embed = discord.Embed(
+                            title="📨 Yeni Öneri Alındı",
+                            description=f"„{message.content}“",
+                            color=0x5865f2,
+                            timestamp=discord.utils.utcnow()
+                        )
+                        log_embed.set_author(name=message.author.display_name, icon_url=message.author.display_avatar.url)
+                        log_embed.add_field(name="📌 Kanal", value=message.channel.mention, inline=True)
+                        log_embed.add_field(name="🔗 Öneri Mesajı", value=f"[Git]({message.jump_url})", inline=True)
+                        log_embed.set_footer(text=f"Kullanıcı ID: {message.author.id}")
+                        await log_ch.send(embed=log_embed)
 
             # 2. Başvuru Kanalı Kontrolü
             elif str(message.channel.id) == config.get('applications_channel'):
@@ -238,6 +255,7 @@ class RuleRequest(BaseModel):
 class ConfigUpdateRequest(BaseModel):
     rules_channel: str = None
     suggestions_channel: str = None
+    suggestions_log_channel: str = None
     applications_channel: str = None
     ticket_category: str = None
     ticket_log_channel: str = None
@@ -292,6 +310,10 @@ class BotStatusRequest(BaseModel):
     activity_name: str
 
 # API Endpoints
+@app.get("/ping")
+async def ping():
+    return {"status": "alive"}
+
 @app.get("/api/stats")
 async def get_stats():
     # Bot ve Sistem verilerini topla
@@ -856,7 +878,8 @@ async def update_config(guild_id: int, req: ConfigUpdateRequest):
     await update_server_channels(
         guild_id, 
         req.rules_channel, 
-        req.suggestions_channel, 
+        req.suggestions_channel,
+        req.suggestions_log_channel,
         req.applications_channel,
         req.ticket_category,
         req.ticket_log_channel,
@@ -966,7 +989,7 @@ async def send_apply_form(guild_id: int):
         ),
         color=0x5865f2 # Discord Blurple
     )
-    embed.set_image(url="https://i.imgur.com/vH9v5Zt.png") # Opsiyonel: Şık bir banner
+    embed.set_image(url="https://cdn.discordapp.com/attachments/1491592592993947848/1491815965975908513/image.png?ex=69d91162&is=69d7bfe2&hm=250f5448f986cc40399dde27a38189623eed45581df740e7ff536425c26a0733")
     embed.set_footer(text="CodeX Academy • Başvuru Sistemi", icon_url=bot.user.display_avatar.url)
     
     await channel.send(embed=embed, view=ApplyView())
